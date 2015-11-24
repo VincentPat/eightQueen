@@ -2,36 +2,53 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>八皇后</title>
+	<title>Eight Queen</title>
 	<style type="text/css">
-	.table {
+	#table {
 		margin: 20px;
+        font-size: 30px;
 	}
-	.table span {
+	#table span {
 		display: inline-block;
 		text-align: center;
-		font-size: 30px;
 		width: 34px;
 	}
+    #stepText {
+        margin: 20px;
+        font-size: 30px;
+    }
+    #timeText {
+        margin: 20px;
+        font-size: 30px;
+    }
 	</style>
 </head>
 <body>
-	<div class="table" id="table"></div><!-- 棋盘 -->
+	<div id="table"></div>
+    <div id="stepText"></div>
+    <div id="timeText"></div>
 </body>
 </html>
 
 <script type="text/javascript">
 
 var table = document.getElementById("table");
+var stepText = document.getElementById("stepText");
+var timeText = document.getElementById("timeText");
 var tableArr = [0,0,0,0,0,0,0,0];
-var count = 0;
+var step = 0;
+var time = 0;
 
 window.onload = function () {
+    var startTime = (new Date()).getTime();
 	placeQueen(0);
+    var endTime = (new Date()).getTime();
+    time = (endTime - startTime)/1000;
+    printTime();
 };
 
 function printTable() {
-	var html = "";
+	var html = "<div style='margin-bottom:10px'>Result:</div>";
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
 			if (j == tableArr[i]) {
@@ -43,6 +60,14 @@ function printTable() {
 		html += "</br>";
 	}
 	table.innerHTML = html;
+}
+
+function printStep() {
+    stepText.innerHTML = "total step: "+step;
+}
+
+function printTime() {
+    timeText.innerHTML = "total time: "+time+"s";
 }
 
 // loop: 当前循环次数，也即行数
@@ -73,15 +98,21 @@ function checkValid(loop, value) {
 // index 递归的行数
 function placeQueen(index) {  
 	// 从列数0遍历到列数7
-    for(var loop = 0; loop < 8; loop++){  
+    for (var loop = 0; loop < 8; loop++) {  
         if (checkValid(index, loop)) {  
         	// 设置位置
-            tableArr[index] = loop;  
+            tableArr[index] = loop; 
+            console.log(tableArr);
 
             // 如果是最后一行则结束并打印
-            if (7 == index) {  
-                count++;
-                printTable();  
+            if (7 == index) {
+                // 打印最终结果
+                printTable(); 
+
+                // 打印步数
+                printStep();
+
+                // 还原最后一项
                 tableArr[index] = 0;  
                 return;  
             }  
@@ -89,9 +120,10 @@ function placeQueen(index) {
             // 递归下一行
             placeQueen(index + 1);  
 
-            // 如果上面的不成功，就重来一遍
+            // 如果上面的不成功，就设置为0，重来一遍
             tableArr[index] = 0;  
-        }  
+        }
+        step++;
     } 
 }
 
