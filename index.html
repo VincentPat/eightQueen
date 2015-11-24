@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>八皇后</title>
+	<style type="text/css">
+	.table {
+		margin: 20px;
+	}
+	.table span {
+		display: inline-block;
+		text-align: center;
+		font-size: 30px;
+		width: 34px;
+	}
+	</style>
+</head>
+<body>
+	<div class="table" id="table"></div><!-- 棋盘 -->
+</body>
+</html>
+
+<script type="text/javascript">
+
+var table = document.getElementById("table");
+var tableArr = [0,0,0,0,0,0,0,0];
+var count = 0;
+
+window.onload = function () {
+	placeQueen(0);
+};
+
+function printTable() {
+	var html = "";
+	for (var i = 0; i < 8; i++) {
+		for (var j = 0; j < 8; j++) {
+			if (j == tableArr[i]) {
+				html += "<span>1</span>";
+			} else {
+				html += "<span>0</span>";
+			}
+		}
+		html += "</br>";
+	}
+	table.innerHTML = html;
+}
+
+// loop: 当前循环次数，也即行数
+// value: 需要检验的列数
+function checkValid(loop, value) { 
+	// 只需要和之前的比较
+    for(var index = 0; index < loop; index ++){  
+        var data = tableArr[index]; // 前面已放好的值
+
+        // 竖直方向上的判断
+        if (value == data) {
+        	return false; 
+        }
+
+        // 右上左下对角线的判断
+        if ((index + data) == (loop + value)) {
+        	return false; 
+        } 
+
+        // 左上右下对角线的判断
+        if((index - data) == (loop - value)) {
+        	return false;  
+        }  
+    }  
+    return true;
+}
+
+// index 递归的行数
+function placeQueen(index) {  
+	// 从列数0遍历到列数7
+    for(var loop = 0; loop < 8; loop++){  
+        if (checkValid(index, loop)) {  
+        	// 设置位置
+            tableArr[index] = loop;  
+
+            // 如果是最后一行则结束并打印
+            if (7 == index) {  
+                count++;
+                printTable();  
+                tableArr[index] = 0;  
+                return;  
+            }  
+             
+            // 递归下一行
+            placeQueen(index + 1);  
+
+            // 如果上面的不成功，就重来一遍
+            tableArr[index] = 0;  
+        }  
+    } 
+}
+
+</script>
